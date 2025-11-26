@@ -65,37 +65,43 @@ export function AddLocationForm() {
 
   return (
     <div className="w-full min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-card border-b border-border px-4 py-3">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
-          {currentStep > FormStep.SEARCH && (
-            <button
-              onClick={handleBack}
-              className="p-2 -ml-2 hover:bg-secondary rounded-lg transition-colors"
-              aria-label="Go back"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+      {/* Header - hidden on initial search step */}
+      {currentStep !== FormStep.SEARCH && (
+        <header className="sticky top-0 z-10 bg-card border-b border-border px-4 py-3">
+          <div className="max-w-2xl mx-auto flex items-center justify-between">
+            {currentStep > FormStep.SEARCH && (
+              <button
+                onClick={handleBack}
+                className="p-2 -ml-2 hover:bg-secondary rounded-lg transition-colors"
+                aria-label="Go back"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
-          )}
-          <h1 className="text-lg font-semibold">Add Location</h1>
-          <div className="w-10" /> {/* Spacer for alignment */}
-        </div>
-      </header>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+            )}
+            <h1 className="text-lg font-semibold">Add Location</h1>
+            <div className="w-10" /> {/* Spacer for alignment */}
+          </div>
+        </header>
+      )}
 
       {/* Main Content */}
-      <main className="max-w-2xl mx-auto px-4 py-6">
+      <main
+        className={`max-w-2xl mx-auto px-4 ${
+          currentStep === FormStep.SEARCH ? "py-8" : "py-6"
+        }`}
+      >
         {currentStep === FormStep.SEARCH && (
           <MerchantSearch onSelect={handlePlaceSelect} />
         )}

@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { type PlaceDetails } from "@/types/location";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { calculateDistance, formatDistance } from "@/utils/distance";
 
 // Category mapping for common Google Place types
@@ -123,7 +122,6 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(
     null
   );
-  const [showNearbySheet, setShowNearbySheet] = useState(false);
   const [nearbyMerchants, setNearbyMerchants] = useState<NearbyMerchant[]>([]);
   const [nearbyLoading, setNearbyLoading] = useState(false);
   const [nearbyError, setNearbyError] = useState<string | null>(null);
@@ -230,38 +228,12 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
     setIsLoading(false);
   }, [onSelect]);
 
-  const handleFindNearby = useCallback(() => {
-    // Check for location permission
-    if (!userLocation) {
-      setNearbyError("Location permission required");
-      // Try to request location again
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setUserLocation({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            });
-            // Retry the search after getting location
-            setTimeout(() => handleFindNearby(), 100);
-          },
-          (error) => {
-            setNearbyError("Please enable location access to find nearby merchants");
-            setShowNearbySheet(true);
-          }
-        );
-      }
-      return;
-    }
-
-    if (!placesServiceRef.current) {
-      setNearbyError("Maps service not ready");
-      return;
-    }
+  // Fetch nearby merchants when location and maps are ready
+  const fetchNearbyMerchants = useCallback(() => {
+    if (!userLocation || !placesServiceRef.current) return;
 
     setNearbyLoading(true);
     setNearbyError(null);
-    setShowNearbySheet(true);
 
     const request: google.maps.places.PlaceSearchRequest = {
       location: new google.maps.LatLng(userLocation.lat, userLocation.lng),
@@ -302,6 +274,33 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
     );
   }, [userLocation]);
 
+  // Auto-fetch nearby merchants when location becomes available
+  useEffect(() => {
+    if (userLocation && placesServiceRef.current) {
+      fetchNearbyMerchants();
+    }
+  }, [userLocation, fetchNearbyMerchants]);
+
+  const handleEnableLocation = useCallback(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+          // fetchNearbyMerchants will be called automatically via useEffect
+        },
+        (error) => {
+          setNearbyError("Please enable location access to find nearby merchants");
+          console.warn("Location access denied:", error);
+        }
+      );
+    } else {
+      setNearbyError("Geolocation is not supported by your browser");
+    }
+  }, []);
+
   const handleSelectNearbyMerchant = useCallback((merchant: NearbyMerchant) => {
     if (!placesServiceRef.current) return;
 
@@ -338,7 +337,6 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
           placeId: place.place_id,
         };
 
-        setShowNearbySheet(false);
         onSelect(details);
       }
       setIsLoading(false);
@@ -389,9 +387,9 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
             />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold mb-2">Find the Merchant</h2>
+        <h2 className="text-2xl font-bold mb-2">Put bitcoin on the map</h2>
         <p className="text-muted-foreground">
-          Search for the business you want to add
+          Add your favorite place to the bitcoin merchants map
         </p>
       </div>
 
@@ -408,30 +406,24 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
         />
       </Card>
 
-      {/* Find Nearby Button */}
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-200" />
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="bg-background px-2 text-muted-foreground">or</span>
-        </div>
-      </div>
+      {/* Enable Location Button - Only show if location not available */}
+      {!userLocation && (
+        <>
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="bg-background px-2 text-muted-foreground">or</span>
+            </div>
+          </div>
 
-      <Button
-        onClick={handleFindNearby}
-        variant="outline"
-        size="lg"
-        className="w-full h-12 text-base"
-        disabled={nearbyLoading}
-      >
-        {nearbyLoading ? (
-          <>
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary mr-2" />
-            Finding nearby merchants...
-          </>
-        ) : (
-          <>
+          <Button
+            onClick={handleEnableLocation}
+            variant="outline"
+            size="lg"
+            className="w-full h-12 text-base"
+          >
             <svg
               className="w-5 h-5 mr-2"
               fill="none"
@@ -452,22 +444,92 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
               />
             </svg>
             Find Nearby Merchants
-          </>
-        )}
-      </Button>
+          </Button>
 
-      {/* Helper Text */}
-      <div className="text-center">
-        <p className="text-sm text-muted-foreground">
-          {userLocation
-            ? "Showing results near you"
-            : "Enable location for better results"}
-        </p>
-      </div>
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">
+              Enable location to see merchants near you
+            </p>
+          </div>
+        </>
+      )}
 
       {isLoading && (
         <div className="flex justify-center py-4">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      )}
+
+      {/* Nearby Merchants Section - Inline */}
+      {userLocation && (
+        <div className="mt-8 animate-in fade-in duration-300">
+          {/* Section Header */}
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold mb-1">Nearby Merchants</h3>
+            <p className="text-sm text-muted-foreground">
+              Tap the merchant you&apos;re at to add it to BTC Map
+            </p>
+          </div>
+
+          {/* Loading State */}
+          {nearbyLoading && (
+            <div className="flex flex-col items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+              <p className="text-muted-foreground">Finding nearby merchants...</p>
+            </div>
+          )}
+
+          {/* Error State */}
+          {nearbyError && !nearbyLoading && (
+            <Card className="p-6 text-center border-dashed">
+              <svg
+                className="w-12 h-12 text-muted-foreground mx-auto mb-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+              <p className="text-sm text-muted-foreground">{nearbyError}</p>
+            </Card>
+          )}
+
+          {/* Merchant List */}
+          {!nearbyLoading && !nearbyError && nearbyMerchants.length > 0 && (
+            <div className="space-y-3">
+              {nearbyMerchants.map((merchant, index) => (
+                <button
+                  key={merchant.place.place_id || index}
+                  onClick={() => handleSelectNearbyMerchant(merchant)}
+                  className="w-full text-left p-4 bg-card hover:bg-accent active:bg-accent/80 rounded-xl transition-all border border-border hover:border-primary/50 hover:shadow-md"
+                  disabled={isLoading}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-base truncate mb-1">
+                        {merchant.place.name}
+                      </h3>
+                      {merchant.place.vicinity && (
+                        <p className="text-sm text-muted-foreground truncate">
+                          {merchant.place.vicinity}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex-shrink-0">
+                      <span className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold bg-primary/10 text-primary">
+                        {formatDistance(merchant.distance)}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
