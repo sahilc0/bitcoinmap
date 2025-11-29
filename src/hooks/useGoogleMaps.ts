@@ -5,13 +5,18 @@ interface UseGoogleMapsReturn {
   loadError: Error | null;
 }
 
+// Shared promise so the Google Maps script is only added once per page
+let googleMapsScriptLoadingPromise: Promise<void> | null = null;
+
 export function useGoogleMaps(): UseGoogleMapsReturn {
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadError, setLoadError] = useState<Error | null>(null);
 
   useEffect(() => {
-    // Check if already loaded
-    if (window.google && window.google.maps) {
+    if (typeof window === "undefined") return;
+
+    // If the Maps library is already available, we are done
+    if ((window as any).google?.maps) {
       setIsLoaded(true);
       return;
     }
@@ -27,31 +32,48 @@ export function useGoogleMaps(): UseGoogleMapsReturn {
       return;
     }
 
-    // Create script element
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
-    script.async = true;
-    script.defer = true;
+    // Reuse the same loading promise so we don't inject the script multiple times
+    if (!googleMapsScriptLoadingPromise) {
+      googleMapsScriptLoadingPromise = new Promise<void>((resolve, reject) => {
+        const existingScript = document.querySelector<HTMLScriptElement>(
+          `script[src^="https://maps.googleapis.com/maps/api/js"]`
+        );
 
-    script.onload = () => {
-      setIsLoaded(true);
-    };
+        if (existingScript) {
+          // If a script tag already exists, just wait for it to finish loading
+          existingScript.addEventListener("load", () => resolve());
+          existingScript.addEventListener("error", () =>
+            reject(new Error("Failed to load Google Maps script"))
+          );
+          return;
+        }
 
-    script.onerror = () => {
-      setLoadError(new Error("Failed to load Google Maps script"));
-    };
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+        script.async = true;
+        script.defer = true;
 
-    document.head.appendChild(script);
+        script.onload = () => resolve();
+        script.onerror = () =>
+          reject(new Error("Failed to load Google Maps script"));
 
-    return () => {
-      // Cleanup if needed
-      const existingScript = document.querySelector(
-        `script[src^="https://maps.googleapis.com/maps/api/js"]`
-      );
-      if (existingScript) {
-        existingScript.remove();
-      }
-    };
+        document.head.appendChild(script);
+      });
+    }
+
+    googleMapsScriptLoadingPromise
+      .then(() => {
+        if ((window as any).google?.maps) {
+          setIsLoaded(true);
+        } else {
+          setLoadError(
+            new Error("Google Maps loaded but maps library is unavailable")
+          );
+        }
+      })
+      .catch((error) => {
+        setLoadError(error instanceof Error ? error : new Error(String(error)));
+      });
   }, []);
 
   return { isLoaded, loadError };

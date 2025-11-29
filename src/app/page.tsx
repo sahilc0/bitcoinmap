@@ -1,5 +1,5 @@
-import { AddLocationForm } from "@/components/add-location/AddLocationForm";
+import Hero from "@/components/Hero";
 
 export default function Home() {
-  return <AddLocationForm />;
+  return <Hero />;
 }
