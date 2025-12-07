@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { type PlaceDetails } from "@/types/location";
+import { StaggerContainer, StaggerItem } from "@/components/ui/animations";
 
 interface DetailsReviewProps {
   initialDetails: PlaceDetails;
@@ -30,24 +31,21 @@ export function DetailsReview({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-6 animate-in slide-in-from-right duration-300"
-    >
-      {/* Header */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Review Details</h2>
-        <p className="text-muted-foreground">
-          Check and edit the information we found
-        </p>
-      </div>
+    <form onSubmit={handleSubmit}>
+      <StaggerContainer className="space-y-6">
+        {/* Header */}
+        <StaggerItem>
+          <h2 className="text-2xl font-bold mb-2 text-foreground/90">Review details</h2>
+          <p className="text-muted-foreground">
+            Double check the information that we found
+          </p>
+        </StaggerItem>
 
-      {/* Form Fields */}
-      <Card className="shadow-sm">
-        <CardContent className="pt-6 space-y-4">
+        {/* Form Fields */}
+        <StaggerItem className="space-y-4">
           {/* Merchant Name */}
           <div className="space-y-2">
-            <Label htmlFor="name">Business Name</Label>
+            <Label htmlFor="name" className="text-muted-foreground">Business name</Label>
             <Input
               id="name"
               type="text"
@@ -61,7 +59,7 @@ export function DetailsReview({
 
           {/* Address */}
           <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address" className="text-muted-foreground">Address</Label>
             <Input
               id="address"
               type="text"
@@ -75,7 +73,7 @@ export function DetailsReview({
 
           {/* Category */}
           <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category" className="text-muted-foreground">Category</Label>
             <Input
               id="category"
               type="text"
@@ -89,7 +87,7 @@ export function DetailsReview({
           {/* Website */}
           {details.website && (
             <div className="space-y-2">
-              <Label htmlFor="website">Website</Label>
+              <Label htmlFor="website" className="text-muted-foreground">Website</Label>
               <Input
                 id="website"
                 type="url"
@@ -104,7 +102,7 @@ export function DetailsReview({
           {/* Phone */}
           {details.phone && (
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone" className="text-muted-foreground">Phone</Label>
               <Input
                 id="phone"
                 type="tel"
@@ -115,50 +113,25 @@ export function DetailsReview({
               />
             </div>
           )}
-        </CardContent>
-      </Card>
-
-      {/* Payment Method Note */}
-      <Card className="bg-accent border-accent-foreground/10 shadow-sm">
-        <CardContent className="pt-6">
-          <div className="flex gap-3">
-            <div className="flex-shrink-0">
-              <svg
-                className="w-5 h-5 text-primary mt-0.5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <div>
-              <p className="font-medium">Lightning Payment</p>
-              <p className="text-sm text-muted-foreground mt-1">
-                This location will be marked as accepting Bitcoin via Lightning
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        </StaggerItem>
 
       {/* Action Buttons */}
-      <div className="flex gap-3 pt-2">
+      <StaggerItem className="flex gap-3 pt-2">
         <Button
           type="button"
           variant="outline"
           onClick={onBack}
           className="flex-1 h-12 text-base"
         >
+          <ChevronLeft className="w-5 h-5 mr-1" />
           Back
         </Button>
         <Button type="submit" className="flex-1 h-12 text-base font-semibold">
           Continue
+          <ChevronRight className="w-5 h-5 ml-1" />
         </Button>
-      </div>
+      </StaggerItem>
+      </StaggerContainer>
     </form>
   );
 }

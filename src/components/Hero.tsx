@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AddLocationForm } from "@/components/add-location/AddLocationForm";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
+import { StaggerContainer, StaggerItem } from "@/components/ui/animations";
 
 type LatLng = {
   lat: number;
@@ -66,10 +67,9 @@ export default function Hero() {
         draggable: false,
         clickableIcons: false,
       });
-    } else {
-      mapRef.current.setCenter(center);
     }
-  }, [center, isLoaded]);
+    // Don't re-center after creation - keep map fixed
+  }, [isLoaded]);
 
   return (
     <section className="relative min-h-screen overflow-hidden">
@@ -80,27 +80,26 @@ export default function Hero() {
       />
 
       {/* Gradient overlay for readability */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-black/30 via-background/90 to-background" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-black/50 via-black/30 via-40% to-background" />
 
       {/* Foreground content */}
-      <div className="relative mx-auto flex min-h-screen max-w-5xl flex-col px-4 pb-12 pt-[22vh] md:px-8 md:pb-16 md:pt-[24vh]">
-        <div className="mb-8 max-w-xl space-y-4">
-          <p className="inline-flex items-center rounded-full bg-black/40 px-3 py-1 text-xs font-medium uppercase tracking-wide text-white shadow-sm backdrop-blur">
-            Bitcoin Map
-          </p>
-          <h1 className="text-3xl font-semibold tracking-tight text-white drop-shadow-sm md:text-4xl lg:text-5xl">
-            Find and add places that accept Bitcoin near you.
+      <StaggerContainer
+        className="relative mx-auto flex min-h-screen max-w-5xl flex-col px-4 pb-12 pt-[22vh] md:px-8 md:pb-16 md:pt-[24vh]"
+        delay={0.1}
+      >
+        <StaggerItem className="mb-8 max-w-xl space-y-2">
+          <h1 className="text-4xl font-semibold tracking-tight text-white drop-shadow-sm md:text-5xl lg:text-6xl">
+            Put bitcoin on the map
           </h1>
-          <p className="max-w-lg text-sm text-white/80 md:text-base">
-            We’ll try to use your location for the map. If that’s not available,
-            you’ll see downtown Austin, Texas by default.
+          <p className="max-w-lg text-base font-medium text-white/90 md:text-lg">
+            Let everyone know your favorite store accepts bitcoin
           </p>
-        </div>
+        </StaggerItem>
 
-        <div className="w-full max-w-xl rounded-xl bg-card/95 p-4 shadow-lg backdrop-blur-md md:p-6">
+        <StaggerItem className="w-full max-w-xl rounded-xl bg-card/95 p-4 shadow-lg backdrop-blur-md md:p-6">
           <AddLocationForm />
-        </div>
-      </div>
+        </StaggerItem>
+      </StaggerContainer>
 
       {loadError && (
         <div className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex justify-center">

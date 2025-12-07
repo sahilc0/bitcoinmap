@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { StaggerContainer, StaggerItem } from "@/components/ui/animations";
 
 interface SuccessScreenProps {
   onAddAnother: () => void;
@@ -10,10 +11,10 @@ interface SuccessScreenProps {
 export function SuccessScreen({ onAddAnother }: SuccessScreenProps) {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
-      <div className="w-full max-w-md space-y-6 animate-in fade-in zoom-in duration-500">
+      <StaggerContainer className="w-full max-w-md space-y-6">
         {/* Success Icon */}
-        <div className="flex justify-center">
-          <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center animate-in zoom-in duration-700">
+        <StaggerItem className="flex justify-center">
+          <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center">
             <svg
               className="w-12 h-12 text-primary-foreground"
               fill="none"
@@ -28,18 +29,19 @@ export function SuccessScreen({ onAddAnother }: SuccessScreenProps) {
               />
             </svg>
           </div>
-        </div>
+        </StaggerItem>
 
         {/* Success Message */}
-        <div className="text-center">
-          <h2 className="text-3xl font-bold mb-3">All Set!</h2>
+        <StaggerItem className="text-center">
+          <h2 className="text-3xl font-bold mb-3 text-foreground/90">All set!</h2>
           <p className="text-lg text-muted-foreground">
             Your submission has been received
           </p>
-        </div>
+        </StaggerItem>
 
         {/* Info Card */}
-        <Card className="shadow-sm">
+        <StaggerItem>
+          <Card className="shadow-sm">
           <CardContent className="pt-6">
             <div className="space-y-4">
               <div className="flex gap-3">
@@ -57,7 +59,7 @@ export function SuccessScreen({ onAddAnother }: SuccessScreenProps) {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-medium">Under Review</p>
+                  <p className="font-medium">Under review</p>
                   <p className="text-sm text-muted-foreground mt-1">
                     Our community volunteers will review and add your location to the
                     map
@@ -77,7 +79,7 @@ export function SuccessScreen({ onAddAnother }: SuccessScreenProps) {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-medium">Stay Updated</p>
+                  <p className="font-medium">Stay updated</p>
                   <p className="text-sm text-muted-foreground mt-1">
                     We'll email you if we need any additional information
                   </p>
@@ -86,31 +88,32 @@ export function SuccessScreen({ onAddAnother }: SuccessScreenProps) {
             </div>
           </CardContent>
         </Card>
+      </StaggerItem>
 
         {/* Action Buttons */}
-        <div className="space-y-3 pt-4">
+        <StaggerItem className="space-y-3 pt-4">
           <Button
             onClick={onAddAnother}
             className="w-full h-12 text-base font-semibold"
           >
-            Add Another Location
+            Add another location
           </Button>
           <Button
             variant="outline"
             className="w-full h-12 text-base"
             onClick={() => window.open("https://btcmap.org", "_blank")}
           >
-            View the Map
+            View the map
           </Button>
-        </div>
+        </StaggerItem>
 
         {/* Footer */}
-        <div className="text-center pt-4">
+        <StaggerItem className="text-center pt-4">
           <p className="text-sm text-muted-foreground">
             Thank you for helping grow the Bitcoin economy! 🚀
           </p>
-        </div>
-      </div>
+        </StaggerItem>
+      </StaggerContainer>
     </div>
   );
 }

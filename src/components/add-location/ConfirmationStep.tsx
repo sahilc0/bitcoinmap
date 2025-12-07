@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { ChevronLeft, Send } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { type PlaceDetails, type LocationSubmission } from "@/types/location";
+import { StaggerContainer, StaggerItem } from "@/components/ui/animations";
 
 const EMAIL_STORAGE_KEY = "btcmap_user_email";
 
@@ -64,35 +66,34 @@ export function ConfirmationStep({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-6 animate-in slide-in-from-right duration-300"
-    >
-      {/* Header */}
-      <div className="text-center">
-        <div className="w-16 h-16 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center">
-          <svg
-            className="w-8 h-8 text-primary-foreground"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"
-            />
-          </svg>
-        </div>
-        <h2 className="text-2xl font-bold mb-2">Almost Done!</h2>
-        <p className="text-muted-foreground">
-          We'll contact you if we need more info
-        </p>
-      </div>
+    <form onSubmit={handleSubmit}>
+      <StaggerContainer className="space-y-6">
+        {/* Header */}
+        <StaggerItem className="text-center">
+          <div className="w-16 h-16 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center">
+            <svg
+              className="w-8 h-8 text-primary-foreground"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"
+              />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold mb-2 text-foreground/90">Almost done!</h2>
+          <p className="text-muted-foreground">
+            We'll contact you if we need more info
+          </p>
+        </StaggerItem>
 
-      {/* Summary Card */}
-      <Card className="shadow-sm">
+        {/* Summary Card */}
+        <StaggerItem>
+          <Card className="shadow-sm">
         <CardContent className="pt-6">
           <div className="space-y-3">
             <div>
@@ -110,11 +111,12 @@ export function ConfirmationStep({
               </div>
             )}
           </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </StaggerItem>
 
       {/* OAuth Buttons (UI Only - will be wired later) */}
-      <div className="space-y-3">
+      <StaggerItem className="space-y-3">
         {showAppleSignIn && (
           <Button
             type="button"
@@ -170,13 +172,14 @@ export function ConfirmationStep({
             </span>
           </div>
         </div>
-      </div>
+      </StaggerItem>
 
       {/* Email Input */}
-      <Card className="shadow-sm">
+      <StaggerItem>
+        <Card className="shadow-sm">
         <CardContent className="pt-6">
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
+            <Label htmlFor="email" className="text-muted-foreground">Email address</Label>
             <Input
               id="email"
               type="email"
@@ -191,11 +194,12 @@ export function ConfirmationStep({
               We'll only use this to follow up if needed
             </p>
           </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </StaggerItem>
 
       {/* Action Buttons */}
-      <div className="flex gap-3 pt-2">
+      <StaggerItem className="flex gap-3 pt-2">
         <Button
           type="button"
           variant="outline"
@@ -203,6 +207,7 @@ export function ConfirmationStep({
           disabled={isSubmitting}
           className="flex-1 h-12 text-base"
         >
+          <ChevronLeft className="w-5 h-5 mr-1" />
           Back
         </Button>
         <Button
@@ -216,10 +221,14 @@ export function ConfirmationStep({
               Submitting...
             </span>
           ) : (
-            "Submit"
+            <>
+              <Send className="w-4 h-4 mr-2" />
+              Submit
+            </>
           )}
         </Button>
-      </div>
+      </StaggerItem>
+      </StaggerContainer>
     </form>
   );
 }

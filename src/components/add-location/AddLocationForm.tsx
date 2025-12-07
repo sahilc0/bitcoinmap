@@ -1,28 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { FormStep, type PlaceDetails, type LocationSubmission } from "@/types/location";
 import { MerchantSearch } from "./MerchantSearch";
 import { DetailsReview } from "./DetailsReview";
 import { ConfirmationStep } from "./ConfirmationStep";
 import { SuccessScreen } from "./SuccessScreen";
+import { SlideContainer, SlideContent } from "@/components/ui/animations";
 
 export function AddLocationForm() {
   const [currentStep, setCurrentStep] = useState<FormStep>(FormStep.SEARCH);
   const [placeDetails, setPlaceDetails] = useState<PlaceDetails | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const directionRef = useRef(1); // 1 = forward, -1 = back
 
   const handlePlaceSelect = (details: PlaceDetails) => {
+    directionRef.current = 1;
     setPlaceDetails(details);
     setCurrentStep(FormStep.DETAILS);
   };
 
   const handleDetailsConfirm = (details: PlaceDetails) => {
+    directionRef.current = 1;
     setPlaceDetails(details);
     setCurrentStep(FormStep.CONFIRMATION);
   };
 
   const handleBack = () => {
+    directionRef.current = -1;
     if (currentStep === FormStep.DETAILS) {
       setCurrentStep(FormStep.SEARCH);
     } else if (currentStep === FormStep.CONFIRMATION) {
@@ -64,61 +69,38 @@ export function AddLocationForm() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-background">
-      {/* Header - hidden on initial search step */}
-      {currentStep !== FormStep.SEARCH && (
-        <header className="sticky top-0 z-10 bg-card border-b border-border px-4 py-3">
-          <div className="max-w-2xl mx-auto flex items-center justify-between">
-            {currentStep > FormStep.SEARCH && (
-              <button
-                onClick={handleBack}
-                className="p-2 -ml-2 hover:bg-secondary rounded-lg transition-colors"
-                aria-label="Go back"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-            )}
-            <h1 className="text-lg font-semibold">Add Location</h1>
-            <div className="w-10" /> {/* Spacer for alignment */}
-          </div>
-        </header>
-      )}
-
+    <div className="w-full">
       {/* Main Content */}
       <main
         className={`max-w-2xl mx-auto px-4 ${
           currentStep === FormStep.SEARCH ? "py-8" : "py-6"
         }`}
       >
-        {currentStep === FormStep.SEARCH && (
-          <MerchantSearch onSelect={handlePlaceSelect} />
-        )}
-        {currentStep === FormStep.DETAILS && placeDetails && (
-          <DetailsReview
-            initialDetails={placeDetails}
-            onConfirm={handleDetailsConfirm}
-            onBack={handleBack}
-          />
-        )}
-        {currentStep === FormStep.CONFIRMATION && placeDetails && (
-          <ConfirmationStep
-            placeDetails={placeDetails}
-            onSubmit={handleSubmit}
-            onBack={handleBack}
-          />
-        )}
+        <SlideContainer direction={directionRef.current}>
+          {currentStep === FormStep.SEARCH && (
+            <SlideContent id="search" direction={directionRef.current}>
+              <MerchantSearch onSelect={handlePlaceSelect} />
+            </SlideContent>
+          )}
+          {currentStep === FormStep.DETAILS && placeDetails && (
+            <SlideContent id="details" direction={directionRef.current}>
+              <DetailsReview
+                initialDetails={placeDetails}
+                onConfirm={handleDetailsConfirm}
+                onBack={handleBack}
+              />
+            </SlideContent>
+          )}
+          {currentStep === FormStep.CONFIRMATION && placeDetails && (
+            <SlideContent id="confirmation" direction={directionRef.current}>
+              <ConfirmationStep
+                placeDetails={placeDetails}
+                onSubmit={handleSubmit}
+                onBack={handleBack}
+              />
+            </SlideContent>
+          )}
+        </SlideContainer>
       </main>
     </div>
   );
