@@ -126,6 +126,8 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [predictions, setPredictions] = useState<google.maps.places.AutocompletePrediction[]>([]);
   const [predictionsLoading, setPredictionsLoading] = useState(false);
+  const [triggerRect, setTriggerRect] = useState<DOMRect | null>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(
     null
   );
@@ -363,6 +365,10 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
 
   // Handle expanding and focusing - must be before early returns
   const handleSearchFocus = useCallback(() => {
+    // Capture trigger position for animation
+    if (triggerRef.current) {
+      setTriggerRect(triggerRef.current.getBoundingClientRect());
+    }
     setIsSearchExpanded(true);
   }, []);
 
@@ -416,11 +422,26 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
               {/* Backdrop */}
               <div className="absolute inset-0 bg-background/95 backdrop-blur-sm" onClick={handleCloseSearch} />
 
-              {/* Search card - box-shadow glow instead of separate div */}
+              {/* Search card - animates from trigger position to top */}
               <motion.div
-                initial={{ scale: 0.96, opacity: 0, y: -10, boxShadow: "0 0 0 0 rgba(0,212,50,0)" }}
-                animate={{ scale: 1, opacity: 1, y: 0, boxShadow: "0 0 40px 8px rgba(0,212,50,0.12)" }}
-                exit={{ scale: 0.96, opacity: 0, y: -10 }}
+                initial={{
+                  scale: 0.98,
+                  opacity: 0,
+                  y: triggerRect ? triggerRect.top - 16 : 0, // 16px = pt-4 padding
+                  boxShadow: "0 0 0 0 rgba(0,212,50,0)"
+                }}
+                animate={{
+                  scale: 1,
+                  opacity: 1,
+                  y: 0,
+                  boxShadow: "0 0 40px 8px rgba(0,212,50,0.12)"
+                }}
+                exit={{
+                  scale: 0.98,
+                  opacity: 0,
+                  y: triggerRect ? triggerRect.top - 16 : 0,
+                  boxShadow: "0 0 0 0 rgba(0,212,50,0)"
+                }}
                 transition={smoothSpring}
                 className="relative w-full max-w-xl bg-card border border-border rounded-3xl overflow-hidden"
               >
@@ -507,6 +528,7 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
         {/* Search Input Trigger */}
         <StaggerItem>
           <motion.button
+            ref={triggerRef}
             onClick={handleSearchFocus}
             className="w-full relative flex items-center"
             whileTap={{ scale: 0.98 }}
