@@ -173,13 +173,13 @@ export function ConfirmationStep({
       </StaggerItem>
 
       {/* Action Buttons */}
-      <StaggerItem className="flex gap-3 pt-2">
+      <StaggerItem className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
         <Button
           type="button"
           variant="outline"
           onClick={onBack}
           disabled={isSubmitting}
-          className="flex-1 h-12 text-base"
+          className="w-full sm:flex-1 h-12 text-base"
         >
           <ChevronLeft className="w-5 h-5 mr-1" />
           Back
@@ -187,7 +187,7 @@ export function ConfirmationStep({
         <Button
           type="submit"
           disabled={isSubmitting || !email}
-          className="flex-1 h-12 text-base font-semibold"
+          className="w-full sm:flex-1 h-12 text-base font-semibold"
         >
           {isSubmitting ? (
             <span className="flex items-center gap-2">
