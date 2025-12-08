@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { ChevronLeft, Send } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -70,7 +69,7 @@ export function ConfirmationStep({
       <StaggerContainer className="space-y-6">
         {/* Header */}
         <StaggerItem>
-          <h2 className="text-2xl font-bold mb-2 text-foreground/90">Almost done!</h2>
+          <h2 className="text-2xl font-bold mb-2 text-foreground">Almost done!</h2>
           <p className="text-muted-foreground">
             Our map contributors may need to reach out to verify a few details
           </p>
@@ -78,11 +77,11 @@ export function ConfirmationStep({
 
         {/* Summary Card */}
         <StaggerItem>
-          <div className="rounded-xl bg-secondary/50 px-4 py-3">
-            <p>{placeDetails.name}</p>
+          <div className="rounded-xl bg-secondary border-l-4 border-primary px-4 py-4">
+            <p className="font-semibold">{placeDetails.name}</p>
             <p className="text-muted-foreground">{placeDetails.address}</p>
             {placeDetails.category && (
-              <span className="mt-2 inline-block rounded-full border border-border px-2 py-0.5 text-muted-foreground">
+              <span className="mt-2 inline-block rounded-full bg-foreground/10 px-3 py-1 text-sm font-medium text-foreground">
                 {placeDetails.category}
               </span>
             )}
@@ -140,9 +139,9 @@ export function ConfirmationStep({
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t" />
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
+          <div className="relative flex justify-center text-xs">
             <span className="bg-background px-2 text-muted-foreground">
-              Or continue with email
+              or continue with email
             </span>
           </div>
         </div>
@@ -150,26 +149,22 @@ export function ConfirmationStep({
 
       {/* Email Input */}
       <StaggerItem>
-        <Card className="shadow-sm">
-        <CardContent className="pt-6">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-muted-foreground">Email address</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              required
-              className="text-base h-12"
-              autoFocus
-            />
-            <p className="text-xs text-muted-foreground">
-              We'll only use this to follow up if needed
-            </p>
-          </div>
-          </CardContent>
-        </Card>
+        <div className="space-y-2">
+          <Label htmlFor="email" className="text-muted-foreground text-sm font-medium">Email address</Label>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="your@email.com"
+            required
+            className="text-base h-12"
+            autoFocus
+          />
+          <p className="text-xs text-muted-foreground">
+            We'll only use this to follow up if needed
+          </p>
+        </div>
       </StaggerItem>
 
       {/* Action Buttons */}

@@ -35,17 +35,17 @@ export function DetailsReview({
       <StaggerContainer className="space-y-6">
         {/* Header */}
         <StaggerItem>
-          <h2 className="text-2xl font-bold mb-2 text-foreground/90">Review details</h2>
+          <h2 className="text-2xl font-bold mb-2 text-foreground">Review details</h2>
           <p className="text-muted-foreground">
             Double check the information that we found
           </p>
         </StaggerItem>
 
         {/* Form Fields */}
-        <StaggerItem className="space-y-4">
+        <StaggerItem className="space-y-5">
           {/* Merchant Name */}
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-muted-foreground">Business name</Label>
+            <Label htmlFor="name" className="text-muted-foreground text-sm font-medium">Business name</Label>
             <Input
               id="name"
               type="text"
@@ -59,7 +59,7 @@ export function DetailsReview({
 
           {/* Address */}
           <div className="space-y-2">
-            <Label htmlFor="address" className="text-muted-foreground">Address</Label>
+            <Label htmlFor="address" className="text-muted-foreground text-sm font-medium">Address</Label>
             <Input
               id="address"
               type="text"
@@ -73,7 +73,7 @@ export function DetailsReview({
 
           {/* Category */}
           <div className="space-y-2">
-            <Label htmlFor="category" className="text-muted-foreground">Category</Label>
+            <Label htmlFor="category" className="text-muted-foreground text-sm font-medium">Category</Label>
             <Input
               id="category"
               type="text"
@@ -87,7 +87,7 @@ export function DetailsReview({
           {/* Website */}
           {details.website && (
             <div className="space-y-2">
-              <Label htmlFor="website" className="text-muted-foreground">Website</Label>
+              <Label htmlFor="website" className="text-muted-foreground text-sm font-medium">Website</Label>
               <Input
                 id="website"
                 type="url"
@@ -102,7 +102,7 @@ export function DetailsReview({
           {/* Phone */}
           {details.phone && (
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-muted-foreground">Phone</Label>
+              <Label htmlFor="phone" className="text-muted-foreground text-sm font-medium">Phone</Label>
               <Input
                 id="phone"
                 type="tel"

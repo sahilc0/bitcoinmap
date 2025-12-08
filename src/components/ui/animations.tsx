@@ -116,7 +116,7 @@ export function StaggerContainer({
         visible: {
           opacity: 1,
           transition: {
-            staggerChildren: 0.1,
+            staggerChildren: 0.08,
             delayChildren: delay,
           },
         },
@@ -254,8 +254,93 @@ export function SlideContent({
   );
 }
 
+// Scale in animation for success elements
+const scaleInSpring = {
+  type: "spring" as const,
+  stiffness: 400,
+  damping: 25,
+};
+
+interface ScaleInProps {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+}
+
+/**
+ * Scale-in animation for success icons and badges
+ * Respects prefers-reduced-motion
+ */
+export function ScaleIn({ children, className, delay = 0 }: ScaleInProps) {
+  const prefersReducedMotion = useReducedMotion();
+
+  return (
+    <motion.div
+      initial={{ scale: prefersReducedMotion ? 1 : 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={
+        prefersReducedMotion
+          ? { duration: 0.01 }
+          : { ...scaleInSpring, delay }
+      }
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+interface AnimatedCheckmarkProps {
+  size?: number;
+  className?: string;
+}
+
+/**
+ * Animated checkmark with scale-in circle and stroke draw
+ * Respects prefers-reduced-motion
+ */
+export function AnimatedCheckmark({ size = 64, className }: AnimatedCheckmarkProps) {
+  const prefersReducedMotion = useReducedMotion();
+
+  return (
+    <motion.div
+      initial={{ scale: prefersReducedMotion ? 1 : 0 }}
+      animate={{ scale: 1 }}
+      transition={prefersReducedMotion ? { duration: 0.01 } : scaleInSpring}
+      className={className}
+    >
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 64 64"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Circle background */}
+        <circle cx="32" cy="32" r="32" className="fill-primary" />
+        {/* Checkmark path with stroke animation */}
+        <motion.path
+          d="M20 32L28 40L44 24"
+          stroke="white"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+          initial={{ pathLength: prefersReducedMotion ? 1 : 0 }}
+          animate={{ pathLength: 1 }}
+          transition={
+            prefersReducedMotion
+              ? { duration: 0.01 }
+              : { duration: 0.3, ease: "easeOut", delay: 0.2 }
+          }
+        />
+      </svg>
+    </motion.div>
+  );
+}
+
 // Export variants for custom use
-export { fadeUpVariants, staggerContainerVariants, slideVariants, smoothSpring };
+export { fadeUpVariants, staggerContainerVariants, slideVariants, smoothSpring, scaleInSpring };
 
 
 

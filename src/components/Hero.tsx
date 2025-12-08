@@ -80,7 +80,7 @@ export default function Hero() {
       />
 
       {/* Gradient overlay for readability */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-black/50 via-black/30 via-40% to-background" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-black/60 via-black/40 via-50% to-background" />
 
       {/* Foreground content */}
       <StaggerContainer
@@ -88,7 +88,7 @@ export default function Hero() {
         delay={0.1}
       >
         <StaggerItem className="mb-8 max-w-xl space-y-2">
-          <h1 className="text-4xl font-semibold tracking-tight text-white drop-shadow-sm md:text-5xl lg:text-6xl">
+          <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-sm md:text-5xl lg:text-6xl">
             Put bitcoin on the map
           </h1>
           <p className="max-w-lg text-base font-medium text-white/90 md:text-lg">
@@ -96,7 +96,7 @@ export default function Hero() {
           </p>
         </StaggerItem>
 
-        <StaggerItem className="w-full max-w-xl rounded-xl bg-card/95 p-4 shadow-lg backdrop-blur-md md:p-6">
+        <StaggerItem className="w-full max-w-xl rounded-2xl bg-card p-5 shadow-2xl backdrop-blur-lg md:p-8">
           <AddLocationForm />
         </StaggerItem>
       </StaggerContainer>
