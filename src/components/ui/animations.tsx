@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence, type Variants } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion, type Variants } from "motion/react";
 import { type ReactNode } from "react";
 
 // Emil/Linear-style spring config - smooth and responsive
@@ -67,18 +67,23 @@ interface FadeInProps {
 
 /**
  * Single element fade-up animation
+ * Respects prefers-reduced-motion by disabling transform animations
  */
 export function FadeIn({ children, className, delay = 0 }: FadeInProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <motion.div
       initial="hidden"
       animate="visible"
       variants={{
-        hidden: { opacity: 0, y: 24 },
+        hidden: { opacity: 0, y: prefersReducedMotion ? 0 : 24 },
         visible: {
           opacity: 1,
           y: 0,
-          transition: { ...smoothSpring, delay },
+          transition: prefersReducedMotion
+            ? { duration: 0.01 }
+            : { ...smoothSpring, delay },
         },
       }}
       className={className}
@@ -128,12 +133,27 @@ interface StaggerItemProps {
   className?: string;
 }
 
+// Reduced motion variants - opacity only, no transforms
+const fadeUpVariantsReduced: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.01 },
+  },
+};
+
 /**
  * Child item for StaggerContainer - fades up
+ * Respects prefers-reduced-motion by disabling transform animations
  */
 export function StaggerItem({ children, className }: StaggerItemProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
-    <motion.div variants={fadeUpVariants} className={className}>
+    <motion.div
+      variants={prefersReducedMotion ? fadeUpVariantsReduced : fadeUpVariants}
+      className={className}
+    >
       {children}
     </motion.div>
   );
@@ -146,9 +166,17 @@ interface SlideTransitionProps {
   className?: string;
 }
 
+// Reduced motion slide variants - opacity only
+const slideVariantsReduced: Variants = {
+  enter: { opacity: 0 },
+  center: { opacity: 1, transition: { duration: 0.01 } },
+  exit: { opacity: 0, transition: { duration: 0.01 } },
+};
+
 /**
  * Directional slide transition wrapper
  * Use with AnimatePresence for step transitions
+ * Respects prefers-reduced-motion by disabling transform animations
  */
 export function SlideTransition({
   children,
@@ -156,12 +184,14 @@ export function SlideTransition({
   direction,
   className,
 }: SlideTransitionProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <AnimatePresence mode="wait" custom={direction}>
       <motion.div
         key={id}
         custom={direction}
-        variants={slideVariants}
+        variants={prefersReducedMotion ? slideVariantsReduced : slideVariants}
         initial="enter"
         animate="center"
         exit="exit"
@@ -199,6 +229,7 @@ interface SlideContentProps {
 
 /**
  * Content that slides in/out - use inside SlideContainer
+ * Respects prefers-reduced-motion by disabling transform animations
  */
 export function SlideContent({
   children,
@@ -206,11 +237,13 @@ export function SlideContent({
   direction,
   className,
 }: SlideContentProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <motion.div
       key={id}
       custom={direction}
-      variants={slideVariants}
+      variants={prefersReducedMotion ? slideVariantsReduced : slideVariants}
       initial="enter"
       animate="center"
       exit="exit"

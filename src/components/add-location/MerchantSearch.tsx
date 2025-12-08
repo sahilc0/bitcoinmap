@@ -428,19 +428,19 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
                   scale: 0.98,
                   opacity: 0,
                   y: triggerRect ? triggerRect.top - 16 : 0, // 16px = pt-4 padding
-                  boxShadow: "0 0 0 0 rgba(0,212,50,0)"
+                  boxShadow: "0 25px 50px -12px rgba(0,0,0,0)"
                 }}
                 animate={{
                   scale: 1,
                   opacity: 1,
                   y: 0,
-                  boxShadow: "0 0 40px 8px rgba(0,212,50,0.12)"
+                  boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)"
                 }}
                 exit={{
                   scale: 0.98,
                   opacity: 0,
                   y: triggerRect ? triggerRect.top - 16 : 0,
-                  boxShadow: "0 0 0 0 rgba(0,212,50,0)"
+                  boxShadow: "0 25px 50px -12px rgba(0,0,0,0)"
                 }}
                 transition={smoothSpring}
                 className="relative w-full max-w-xl bg-card border border-border rounded-3xl overflow-hidden"
