@@ -69,51 +69,25 @@ export function ConfirmationStep({
     <form onSubmit={handleSubmit}>
       <StaggerContainer className="space-y-6">
         {/* Header */}
-        <StaggerItem className="text-center">
-          <div className="w-16 h-16 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center">
-            <svg
-              className="w-8 h-8 text-primary-foreground"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"
-              />
-            </svg>
-          </div>
+        <StaggerItem>
           <h2 className="text-2xl font-bold mb-2 text-foreground/90">Almost done!</h2>
           <p className="text-muted-foreground">
-            We'll contact you if we need more info
+            Our map contributors may need to reach out to verify a few details
           </p>
         </StaggerItem>
 
         {/* Summary Card */}
         <StaggerItem>
-          <Card className="shadow-sm">
-        <CardContent className="pt-6">
-          <div className="space-y-3">
-            <div>
-              <p className="text-sm text-muted-foreground">Business</p>
-              <p className="font-semibold">{placeDetails.name}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Address</p>
-              <p className="text-sm">{placeDetails.address}</p>
-            </div>
+          <div className="rounded-xl bg-secondary/50 px-4 py-3">
+            <p>{placeDetails.name}</p>
+            <p className="text-muted-foreground">{placeDetails.address}</p>
             {placeDetails.category && (
-              <div>
-                <p className="text-sm text-muted-foreground">Category</p>
-                <p className="text-sm">{placeDetails.category}</p>
-              </div>
+              <span className="mt-2 inline-block rounded-full border border-border px-2 py-0.5 text-muted-foreground">
+                {placeDetails.category}
+              </span>
             )}
           </div>
-          </CardContent>
-        </Card>
-      </StaggerItem>
+        </StaggerItem>
 
       {/* OAuth Buttons (UI Only - will be wired later) */}
       <StaggerItem className="space-y-3">
