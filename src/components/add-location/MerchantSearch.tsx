@@ -551,14 +551,6 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
       )}
 
       <StaggerContainer className="space-y-6">
-        {/* TEST BUTTON - REMOVE AFTER TESTING */}
-        <button
-          onClick={() => alert('Button works!')}
-          className="w-full p-4 bg-red-500 text-white rounded-xl font-bold"
-        >
-          TEST BUTTON - TAP ME (v2)
-        </button>
-
         {/* Search Input Trigger */}
         <StaggerItem>
           <motion.button
@@ -577,15 +569,10 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
       {/* Enable Location - Only show if location not available */}
       {!userLocation && (
         <StaggerItem>
-          <motion.button
+          <button
             onClick={handleEnableLocation}
-            onTouchEnd={(e) => {
-              e.preventDefault();
-              if (!locationLoading) handleEnableLocation();
-            }}
             disabled={locationLoading}
-            className="w-full mt-4 p-5 rounded-2xl bg-secondary/50 hover:bg-secondary/80 active:bg-secondary border border-border/50 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
-            whileTap={locationLoading ? {} : { scale: 0.98 }}
+            className="w-full mt-4 p-5 rounded-2xl bg-secondary/50 hover:bg-secondary/80 active:bg-secondary active:scale-[0.98] border border-border/50 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
           >
             <div className="flex items-center gap-4">
               <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -639,7 +626,7 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
                 </svg>
               )}
             </div>
-          </motion.button>
+          </button>
         </StaggerItem>
       )}
 
