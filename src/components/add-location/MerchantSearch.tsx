@@ -141,22 +141,8 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
 
   const { isLoaded, loadError } = useGoogleMaps();
 
-  // Get user's location
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.warn("Location access denied:", error);
-        }
-      );
-    }
-  }, []);
+  // Don't auto-request location on page load - let user click the button first
+  // so they understand why we're asking for location
 
   // Initialize Google Places Services
   useEffect(() => {
@@ -311,12 +297,7 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
     setLocationLoading(true);
     setNearbyError(null);
 
-    const options: PositionOptions = {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 300000,
-    };
-
+    // Simple call matching the working page-load version (no options)
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setLocationLoading(false);
@@ -324,11 +305,9 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
-        // fetchNearbyMerchants will be called automatically via useEffect
       },
       (error) => {
         setLocationLoading(false);
-        // Provide iOS-specific guidance
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
         if (error.code === error.PERMISSION_DENIED) {
           setNearbyError(
@@ -336,14 +315,10 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
               ? "Location denied. Go to Settings > Safari > Location to enable."
               : "Please enable location access in your browser settings."
           );
-        } else if (error.code === error.TIMEOUT) {
-          setNearbyError("Location request timed out. Please try again.");
         } else {
           setNearbyError("Could not determine your location. Please try again.");
         }
-        console.warn("Location access denied:", error);
-      },
-      options
+      }
     );
   }, []);
 
@@ -570,10 +545,7 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
       {!userLocation && (
         <StaggerItem>
           <button
-            onClick={() => {
-              alert('Button clicked!');
-              handleEnableLocation();
-            }}
+            onClick={handleEnableLocation}
             disabled={locationLoading}
             className="w-full mt-4 p-5 rounded-2xl bg-secondary/50 hover:bg-secondary/80 active:bg-secondary active:scale-[0.98] border border-border/50 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
           >
