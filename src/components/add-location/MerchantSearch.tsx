@@ -571,6 +571,10 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
         <StaggerItem>
           <motion.button
             onClick={handleEnableLocation}
+            onTouchEnd={(e) => {
+              e.preventDefault();
+              if (!locationLoading) handleEnableLocation();
+            }}
             disabled={locationLoading}
             className="w-full mt-4 p-5 rounded-2xl bg-secondary/50 hover:bg-secondary/80 active:bg-secondary border border-border/50 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
             whileTap={locationLoading ? {} : { scale: 0.98 }}
