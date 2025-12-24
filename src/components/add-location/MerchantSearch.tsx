@@ -297,9 +297,15 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
     setLocationLoading(true);
     setNearbyError(null);
 
-    // Simple call matching the working page-load version (no options)
+    // Timeout for when system settings block location entirely (no callback fires)
+    const timeoutId = setTimeout(() => {
+      setLocationLoading(false);
+      setNearbyError("Location may be blocked. Check Settings > Privacy > Location Services > Safari");
+    }, 5000);
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        clearTimeout(timeoutId);
         setLocationLoading(false);
         setUserLocation({
           lat: position.coords.latitude,
@@ -307,16 +313,12 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
         });
       },
       (error) => {
+        clearTimeout(timeoutId);
         setLocationLoading(false);
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
         if (error.code === error.PERMISSION_DENIED) {
-          setNearbyError(
-            isIOS
-              ? "Location denied. Go to Settings > Safari > Location to enable."
-              : "Please enable location access in your browser settings."
-          );
+          setNearbyError("Location denied. Tap aA in address bar > Website Settings > Location > Allow");
         } else {
-          setNearbyError("Could not determine your location. Please try again.");
+          setNearbyError("Could not get location. Please try again.");
         }
       }
     );
