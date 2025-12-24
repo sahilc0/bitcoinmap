@@ -134,6 +134,7 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
   const [nearbyMerchants, setNearbyMerchants] = useState<NearbyMerchant[]>([]);
   const [nearbyLoading, setNearbyLoading] = useState(false);
   const [nearbyError, setNearbyError] = useState<string | null>(null);
+  const [locationLoading, setLocationLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteServiceRef = useRef<google.maps.places.AutocompleteService | null>(null);
   const placesServiceRef = useRef<google.maps.places.PlacesService | null>(null);
@@ -302,23 +303,48 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
   }, [userLocation, fetchNearbyMerchants]);
 
   const handleEnableLocation = useCallback(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-          // fetchNearbyMerchants will be called automatically via useEffect
-        },
-        (error) => {
-          setNearbyError("Please enable location access to find nearby merchants");
-          console.warn("Location access denied:", error);
-        }
-      );
-    } else {
+    if (!navigator.geolocation) {
       setNearbyError("Geolocation is not supported by your browser");
+      return;
     }
+
+    setLocationLoading(true);
+    setNearbyError(null);
+
+    const options: PositionOptions = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 300000,
+    };
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocationLoading(false);
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        // fetchNearbyMerchants will be called automatically via useEffect
+      },
+      (error) => {
+        setLocationLoading(false);
+        // Provide iOS-specific guidance
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (error.code === error.PERMISSION_DENIED) {
+          setNearbyError(
+            isIOS
+              ? "Location denied. Go to Settings > Safari > Location to enable."
+              : "Please enable location access in your browser settings."
+          );
+        } else if (error.code === error.TIMEOUT) {
+          setNearbyError("Location request timed out. Please try again.");
+        } else {
+          setNearbyError("Could not determine your location. Please try again.");
+        }
+        console.warn("Location access denied:", error);
+      },
+      options
+    );
   }, []);
 
   const handleSelectNearbyMerchant = useCallback((merchant: NearbyMerchant) => {
@@ -545,13 +571,49 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
         <StaggerItem>
           <motion.button
             onClick={handleEnableLocation}
-            className="w-full mt-4 p-5 rounded-2xl bg-secondary/50 hover:bg-secondary/80 active:bg-secondary border border-border/50 transition-all"
-            whileTap={{ scale: 0.98 }}
+            disabled={locationLoading}
+            className="w-full mt-4 p-5 rounded-2xl bg-secondary/50 hover:bg-secondary/80 active:bg-secondary border border-border/50 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+            whileTap={locationLoading ? {} : { scale: 0.98 }}
           >
             <div className="flex items-center gap-4">
               <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                {locationLoading ? (
+                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" />
+                ) : (
+                  <svg
+                    className="w-6 h-6 text-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                )}
+              </div>
+              <div className="flex-1 text-left">
+                <p className="font-semibold text-base text-foreground">
+                  {locationLoading ? "Requesting location..." : "Find nearby merchants"}
+                </p>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {locationLoading
+                    ? "Please allow location access when prompted"
+                    : "Use your location to discover places around you"}
+                </p>
+              </div>
+              {!locationLoading && (
                 <svg
-                  className="w-6 h-6 text-primary"
+                  className="w-5 h-5 text-muted-foreground flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -560,33 +622,10 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    d="M9 5l7 7-7 7"
                   />
                 </svg>
-              </div>
-              <div className="flex-1 text-left">
-                <p className="font-semibold text-base text-foreground">Find nearby merchants</p>
-                <p className="text-sm text-muted-foreground mt-0.5">Use your location to discover places around you</p>
-              </div>
-              <svg
-                className="w-5 h-5 text-muted-foreground flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              )}
             </div>
           </motion.button>
         </StaggerItem>
