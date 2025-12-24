@@ -551,6 +551,14 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
       )}
 
       <StaggerContainer className="space-y-6">
+        {/* TEST BUTTON - REMOVE AFTER TESTING */}
+        <button
+          onClick={() => alert('Button works!')}
+          className="w-full p-4 bg-red-500 text-white rounded-xl font-bold"
+        >
+          TEST BUTTON - TAP ME (v2)
+        </button>
+
         {/* Search Input Trigger */}
         <StaggerItem>
           <motion.button
