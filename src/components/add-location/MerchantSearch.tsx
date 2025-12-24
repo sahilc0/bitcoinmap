@@ -570,7 +570,10 @@ export function MerchantSearch({ onSelect }: MerchantSearchProps) {
       {!userLocation && (
         <StaggerItem>
           <button
-            onClick={handleEnableLocation}
+            onClick={() => {
+              alert('Button clicked!');
+              handleEnableLocation();
+            }}
             disabled={locationLoading}
             className="w-full mt-4 p-5 rounded-2xl bg-secondary/50 hover:bg-secondary/80 active:bg-secondary active:scale-[0.98] border border-border/50 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
           >
