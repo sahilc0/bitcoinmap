@@ -28,14 +28,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-        <footer className="py-6 text-center text-xs text-muted-foreground/60">
+        <footer className="py-8 text-center text-sm text-foreground/40">
           <p>
             Made by{" "}
             <a
               href="https://twitter.com/sahilc0"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-muted-foreground transition-colors"
+              className="hover:text-foreground/60 transition-colors"
             >
               Sahil
             </a>
@@ -45,7 +45,7 @@ export default function RootLayout({
               href="https://btcmap.org"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-muted-foreground transition-colors"
+              className="hover:text-foreground/60 transition-colors"
             >
               BTCMap
             </a>
