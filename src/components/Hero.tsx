@@ -111,14 +111,14 @@ export default function Hero() {
       )}
 
       {/* Footer */}
-      <footer className="absolute bottom-4 left-0 right-0 text-center text-sm text-white/50">
+      <footer className="absolute bottom-4 left-0 right-0 text-center text-sm text-muted-foreground/70">
         <p>
           Made by{" "}
           <a
             href="https://twitter.com/sahilc0"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-white/70 transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             Sahil
           </a>
@@ -128,7 +128,7 @@ export default function Hero() {
             href="https://btcmap.org"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-white/70 transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             BTCMap
           </a>
