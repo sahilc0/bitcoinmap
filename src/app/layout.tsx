@@ -28,29 +28,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-        <footer className="py-8 text-center text-sm text-foreground/40">
-          <p>
-            Made by{" "}
-            <a
-              href="https://twitter.com/sahilc0"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground/60 transition-colors"
-            >
-              Sahil
-            </a>
-            {" · "}
-            Powered by{" "}
-            <a
-              href="https://btcmap.org"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground/60 transition-colors"
-            >
-              BTCMap
-            </a>
-          </p>
-        </footer>
       </body>
     </html>
   );

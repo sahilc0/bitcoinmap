@@ -102,13 +102,38 @@ export default function Hero() {
       </StaggerContainer>
 
       {loadError && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex justify-center">
+        <div className="pointer-events-none absolute inset-x-0 bottom-12 z-10 flex justify-center">
           <p className="rounded-full bg-destructive px-3 py-1 text-xs text-white shadow">
             There was a problem loading the map, but you can still add
             locations.
           </p>
         </div>
       )}
+
+      {/* Footer */}
+      <footer className="absolute bottom-4 left-0 right-0 text-center text-sm text-white/50">
+        <p>
+          Made by{" "}
+          <a
+            href="https://twitter.com/sahilc0"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white/70 transition-colors"
+          >
+            Sahil
+          </a>
+          {" · "}
+          Powered by{" "}
+          <a
+            href="https://btcmap.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white/70 transition-colors"
+          >
+            BTCMap
+          </a>
+        </p>
+      </footer>
     </section>
   );
 }
