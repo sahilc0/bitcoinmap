@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -128,12 +127,10 @@ export function DetailsReview({
             onClick={onBack}
             className="w-full sm:flex-1 h-12 text-base"
           >
-            <ChevronLeft className="w-5 h-5 mr-1" />
             Back
           </Button>
           <Button type="submit" className="w-full sm:flex-1 h-12 text-base font-semibold">
             Continue
-            <ChevronRight className="w-5 h-5 ml-1" />
           </Button>
         </div>
       </div>

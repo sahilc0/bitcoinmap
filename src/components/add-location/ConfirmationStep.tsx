@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronLeft, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -106,7 +106,7 @@ export function ConfirmationStep({
           <StaggerItem>
             <h2 className="text-2xl font-bold mb-2 text-foreground">Almost done!</h2>
             <p className="text-muted-foreground">
-              Our map contributors may need to reach out to verify a few details
+              BTCMap contributors may reach out to verify details
             </p>
           </StaggerItem>
 
@@ -206,9 +206,6 @@ export function ConfirmationStep({
                 className="text-base h-12"
                 autoFocus
               />
-              <p className="text-xs text-muted-foreground">
-                We'll only use this to follow up if needed
-              </p>
             </div>
           </StaggerItem>
         </StaggerContainer>
@@ -224,7 +221,6 @@ export function ConfirmationStep({
             disabled={isSubmitting}
             className="w-full sm:flex-1 h-12 text-base"
           >
-            <ChevronLeft className="w-5 h-5 mr-1" />
             Back
           </Button>
           <Button

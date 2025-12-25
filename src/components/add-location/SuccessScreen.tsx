@@ -35,7 +35,7 @@ export function SuccessScreen({ onAddAnother }: SuccessScreenProps) {
               </div>
               <div>
                 <p className="font-medium">Under review</p>
-                <p className="text-muted-foreground text-sm">Our community volunteers will review and add your location to the map</p>
+                <p className="text-muted-foreground text-sm">BTCMap volunteers will review and add your location to the map</p>
               </div>
             </div>
             <div className="flex gap-3">
