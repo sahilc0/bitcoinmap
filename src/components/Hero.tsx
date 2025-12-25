@@ -73,6 +73,16 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen overflow-hidden">
+      {/* Test button */}
+      <div className="absolute top-4 left-4 z-50">
+        <button
+          onClick={() => {}}
+          className="rounded-lg bg-blue-500 px-4 py-2 text-white font-medium shadow-lg"
+        >
+          Test Button
+        </button>
+      </div>
+
       {/* Background map layer */}
       <div
         ref={mapContainerRef}
