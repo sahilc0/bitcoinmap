@@ -14,8 +14,6 @@ export async function POST(request: Request) {
     // For MVP, we'll return success and log the submission
     // In production, this would create a GitHub issue
 
-    console.log("Location submission received:", submission);
-
     // Create GitHub issue
     const githubToken = process.env.GITHUB_TOKEN;
     if (githubToken) {
